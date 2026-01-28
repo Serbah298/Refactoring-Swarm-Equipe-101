@@ -15,10 +15,16 @@ class AuditorAgent:
 
             # Étape 2 : Construire le prompt pour le LLM
             input_prompt = (
-                "Tu es un expert Python. Analyse ce code et identifie : "
-                "les erreurs, les mauvaises pratiques et les améliorations possibles.\n\n"
+                "Tu es un auditeur de code Python strict.\n"
+                "Analyse UNIQUEMENT le code ci-dessous.\n"
+                "Retourne une liste numérotée de problèmes détectés.\n"
+                "Chaque élément doit être court et factuel.\n"
+                "N'inclus AUCUNE solution.\n"
+                "N'inclus AUCUNE explication.\n"
+                "N'inclus AUCUN texte hors de la liste.\n\n"
                 f"{code}"
             )
+
 
             # Étape 3 : (Ici, on simule la réponse du LLM)
             # Plus tard, tu remplaceras par un appel réel à Gemini

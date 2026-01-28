@@ -10,7 +10,11 @@ class JudgeAgent:
     def run_tests(self, target_dir: str):
         """Exécute pytest sur le dossier corrigé."""
         try:
-            input_prompt = f"Tester le code Python dans le dossier {target_dir}"
+            input_prompt = (
+                f"Exécution automatique des tests pytest "
+                f"sur le dossier cible : {target_dir}"
+            )
+
             
             # Étape 1 : exécuter pytest
             result = subprocess.run(
