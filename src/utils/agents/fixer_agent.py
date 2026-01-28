@@ -15,11 +15,18 @@ class FixerAgent:
 
             # Étape 2 : Construire le prompt pour le LLM
             input_prompt = (
-                "Tu es un expert Python. Voici un code à corriger selon ce plan :\n"
+                "Tu es un agent de correction de code Python.\n"
+                "Applique UNIQUEMENT les corrections décrites dans le plan ci-dessous.\n"
+                "Ne modifie rien d'autre.\n"
+                "Ne reformule pas le code.\n"
+                "Ne commente pas tes actions.\n"
+                "Ne produis QUE le code Python corrigé.\n\n"
+                "PLAN DE CORRECTION :\n"
                 f"{analysis_feedback}\n\n"
-                "Corrige le code ci-dessous :\n"
+                "CODE À CORRIGER :\n"
                 f"{code}"
             )
+
 
             # Étape 3 : (Simulation pour test)
             output_response = (
