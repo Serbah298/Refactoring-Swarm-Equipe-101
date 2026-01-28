@@ -1,23 +1,24 @@
+# main.py
 import argparse
-import sys
 import os
-from dotenv import load_dotenv
-from src.utils.logger import log_experiment
-
-load_dotenv()
+from src.agents.auditor_agent import AuditorAgent
+from src.agents.fixer_agent import FixerAgent
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--target_dir", type=str, required=True)
+    parser.add_argument("--target_dir", required=True)
     args = parser.parse_args()
 
-    if not os.path.exists(args.target_dir):
-        print(f"❌ Dossier {args.target_dir} introuvable.")
-        sys.exit(1)
+    auditor = AuditorAgent()
+    fixer = FixerAgent()
 
-    print(f"🚀 DEMARRAGE SUR : {args.target_dir}")
-    log_experiment("System", "STARTUP", f"Target: {args.target_dir}", "INFO")
-    print("✅ MISSION_COMPLETE")
+    for filename in os.listdir(args.target_dir):
+        if filename.endswith(".py"):
+            file_path = os.path.join(args.target_dir, filename)
+            # Étape 1 : Analyse
+            analysis_feedback = auditor.analyze_file(file_path)
+            # Étape 2 : Correction
+            fixer.fix_code(file_path, analysis_feedback)
 
 if __name__ == "__main__":
     main()
