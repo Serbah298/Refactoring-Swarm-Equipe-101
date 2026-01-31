@@ -32,6 +32,25 @@ def run_pylint(path: str) -> dict:
             "error": str(e)
         }
 
+def run_pytest() -> dict:
+    try:
+        result = subprocess.run(
+            ["pytest"],
+            capture_output=True,
+            text=True
+        )
+        return {
+            "success": result.returncode == 0,
+            "returncode": result.returncode,
+            "stdout": result.stdout,
+            "stderr": result.stderr
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e)
+        }
+
 def read_file(path: str) -> str:
     try:
         file_path = (PROJECT_ROOT / path).resolve()
