@@ -1,5 +1,6 @@
 # src/agents/judge_agent.py
 from src.utils.logger import log_experiment, ActionType
+from src.utils.tools import run_pytest
 import os
 import subprocess
 
@@ -14,18 +15,10 @@ class JudgeAgent:
                 f"Exécution automatique des tests pytest "
                 f"sur le dossier cible : {target_dir}"
             )
-
-            
-            # Étape 1 : exécuter pytest
-            result = subprocess.run(
-                ["pytest", "--maxfail=1", "--disable-warnings", "-q", target_dir],
-                capture_output=True, text=True
-            )
-            
-            output_response = result.stdout + result.stderr
-
-            # Étape 2 : Statut de réussite
-            success = result.returncode == 0
+          
+            test_result = run_pytest()
+            success = test_result["success"]
+            output_response = test_result.get("stdout", "") + test_result.get("stderr", "")
 
             log_experiment(
                 agent_name="Judge_Agent",
