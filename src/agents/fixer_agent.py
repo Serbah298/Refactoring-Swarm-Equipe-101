@@ -1,5 +1,6 @@
 # src/agents/fixer_agent.py
 from src.utils.logger import log_experiment, ActionType
+from src.utils.tools import safe_read_file, safe_write_file
 import os
 
 class FixerAgent:
@@ -10,8 +11,7 @@ class FixerAgent:
         """Corrige le code en fonction du retour de l'auditor."""
         try:
             # Étape 1 : Lire le code original
-            with open(file_path, "r", encoding="utf-8") as f:
-                code = f.read()
+            code = safe_read_file(file_path)
 
             # Étape 2 : Construire le prompt pour le LLM
             input_prompt = (
@@ -45,8 +45,7 @@ class FixerAgent:
             if not os.path.abspath(fixed_file_path).startswith(os.path.abspath("sandbox")):
                 raise PermissionError("Tentative d’écriture hors de sandbox interdite !")
 
-            with open(fixed_file_path, "w", encoding="utf-8") as f:
-                f.write(fixed_code)
+            safe_write_file(fixed_file_path, fixed_code)
 
             # Étape 6 : Logging obligatoire
             log_experiment(

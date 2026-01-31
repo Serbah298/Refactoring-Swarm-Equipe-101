@@ -51,7 +51,7 @@ def run_pytest() -> dict:
             "error": str(e)
         }
 
-def read_file(path: str) -> str:
+def safe_read_file(path: str) -> str:
     try:
         file_path = (PROJECT_ROOT / path).resolve()
         if not str(file_path).startswith(str(PROJECT_ROOT)):
@@ -60,7 +60,7 @@ def read_file(path: str) -> str:
     except Exception as e:
         raise RuntimeError(f"Cannot read file: {e}")
 
-def write_file(path: str, content: str) -> None:
+def safe_write_file(path: str, content: str) -> None:
     try:
         file_path = (PROJECT_ROOT / path).resolve()
         if not str(file_path).startswith(str(PROJECT_ROOT)):

@@ -1,5 +1,6 @@
 # src/agents/auditor_agent.py
 from src.utils.logger import log_experiment, ActionType
+from src.utils.tools import safe_read_file, safe_write_file
 import os
 
 class AuditorAgent:
@@ -10,8 +11,7 @@ class AuditorAgent:
         """Analyse un fichier Python et détecte les problèmes."""
         try:
             # Étape 1 : Lire le contenu du fichier
-            with open(file_path, "r", encoding="utf-8") as f:
-                code = f.read()
+            code = safe_read_file(file_path)
 
             # Étape 2 : Construire le prompt pour le LLM
             input_prompt = (
