@@ -33,7 +33,7 @@ def main():
                     break
                 else:
                     print("🔧 Nouvelle tentative de correction...")
-                    fixer.fix_code(fixed_path, feedback)
+                    fixed_path = fixer.fix_code(fixed_path, feedback)
 
 if __name__ == "__main__":
     main()
