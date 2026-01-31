@@ -1,4 +1,7 @@
 import subprocess
+from pathlib import Path
+
+PROJECT_ROOT = Path.cwd()
 
 def run_pylint(path: str) -> dict:
     try:
@@ -28,3 +31,21 @@ def run_pylint(path: str) -> dict:
             "success": False,
             "error": str(e)
         }
+
+def read_file(path: str) -> str:
+    try:
+        file_path = (PROJECT_ROOT / path).resolve()
+        if not str(file_path).startswith(str(PROJECT_ROOT)):
+            raise ValueError("Access denied")
+        return file_path.read_text(encoding="utf-8")
+    except Exception as e:
+        raise RuntimeError(f"Cannot read file: {e}")
+
+def write_file(path: str, content: str) -> None:
+    try:
+        file_path = (PROJECT_ROOT / path).resolve()
+        if not str(file_path).startswith(str(PROJECT_ROOT)):
+            raise ValueError("Access denied")
+        file_path.write_text(content, encoding="utf-8")
+    except Exception as e:
+        raise RuntimeError(f"Cannot write file: {e}")
