@@ -32,10 +32,10 @@ def run_pylint(path: str) -> dict:
             "error": str(e)
         }
 
-def run_pytest() -> dict:
+def run_pytest(target_dir: str) -> dict:
     try:
         result = subprocess.run(
-            ["pytest"],
+            ["pytest", target_dir],
             capture_output=True,
             text=True
         )
@@ -50,6 +50,7 @@ def run_pytest() -> dict:
             "success": False,
             "error": str(e)
         }
+
 
 def safe_read_file(path: str) -> str:
     try:
