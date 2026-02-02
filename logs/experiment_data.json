@@ -1,11 +1,54 @@
 [
-  {
-    "id": "9e82e9b0-9b43-4a78-af43-d5d5ef848a2f",
-    "timestamp": "2025-12-26T01:26:41.177789",
-    "agent": "System",
-    "model": "unknown",
-    "action": "STARTUP",
-    "details": "Target: ./sandbox",
-    "status": "INFO"
-  }
+    {
+        "id": "a95a0ca1-ef2a-4af1-8914-5d7c7f7c1fd8",
+        "timestamp": "2026-02-02T03:12:02.168939",
+        "agent": "Auditor_Agent",
+        "model": "gemini-2.5-flash",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "file_analyzed": "buggy_code.py",
+            "input_prompt": "Tu es un auditeur de code Python strict.\nAnalyse UNIQUEMENT le code ci-dessous.\nRetourne une liste numérotée de problèmes détectés.\nChaque élément doit être court et factuel.\nN'inclus AUCUNE solution.\nN'inclus AUCUNE explication.\nN'inclus AUCUN texte hors de la liste.\n\ndef add(a, b)\n    return a + b",
+            "output_response": "J'ai détecté une absence de docstring et une mauvaise indentation dans la fonction foo().",
+            "issues_found": 2
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "513e7b6d-37a4-4760-929b-5c8ee967eaad",
+        "timestamp": "2026-02-02T03:46:32.044935",
+        "agent": "Fixer_Agent",
+        "model": "gemini-2.5-flash",
+        "action": "FIX",
+        "details": {
+            "file_fixed": "fixed_buggy_code.py",
+            "input_prompt": "Tu es un agent de correction de code Python.\nApplique UNIQUEMENT les corrections décrites dans le plan ci-dessous.\nNe modifie rien d'autre.\nNe reformule pas le code.\nNe commente pas tes actions.\nNe produis QUE le code Python corrigé.\n\nPLAN DE CORRECTION :\nErreur de syntaxe : parenthèse manquante\n\nCODE À CORRIGER :\ndef add(a, b)\n    return a + b",
+            "output_response": "Correction appliquée : indentation corrigée, ajout d’une docstring.",
+            "status": "code saved"
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "be4c3c7c-645f-4edb-9fa4-090849275165",
+        "timestamp": "2026-02-02T04:15:34.890328",
+        "agent": "Judge_Agent",
+        "model": "gemini-2.5-flash",
+        "action": "DEBUG",
+        "details": {
+            "input_prompt": "Erreur lors de l'exécution de pytest",
+            "output_response": "run_pytest() takes 0 positional arguments but 1 was given"
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "c6f58846-2196-4d4c-b6d9-038aea34244f",
+        "timestamp": "2026-02-02T04:18:40.458697",
+        "agent": "Judge_Agent",
+        "model": "gemini-2.5-flash",
+        "action": "DEBUG",
+        "details": {
+            "input_prompt": "Exécution automatique des tests pytest sur le dossier cible : sandbox/dataset_internal_test",
+            "output_response": "============================= test session starts =============================\nplatform win32 -- Python 3.11.6, pytest-7.4.4, pluggy-1.6.0\nrootdir: C:\\Users\\hamid\\tp_BATATA\\Refactoring-Swarm-Equipe-101\nplugins: anyio-4.12.1\ncollected 0 items / 1 error\n\n=================================== ERRORS ====================================\n______ ERROR collecting sandbox/dataset_internal_test/test_buggy_code.py ______\nvenv\\Lib\\site-packages\\_pytest\\python.py:617: in _importtestmodule\n    mod = import_path(self.path, mode=importmode, root=self.config.rootpath)\nvenv\\Lib\\site-packages\\_pytest\\pathlib.py:567: in import_path\n    importlib.import_module(module_name)\n..\\..\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\importlib\\__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n<frozen importlib._bootstrap>:1204: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1176: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1147: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:690: in _load_unlocked\n    ???\nvenv\\Lib\\site-packages\\_pytest\\assertion\\rewrite.py:186: in exec_module\n    exec(co, module.__dict__)\nsandbox\\dataset_internal_test\\test_buggy_code.py:1: in <module>\n    from buggy_code import add\nE     File \"C:\\Users\\hamid\\tp_BATATA\\Refactoring-Swarm-Equipe-101\\sandbox\\dataset_internal_test\\buggy_code.py\", line 1\nE       def add(a, b)\nE                    ^\nE   SyntaxError: expected ':'\n=========================== short test summary info ===========================\nERROR sandbox/dataset_internal_test/test_buggy_code.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n============================== 1 error in 0.71s ===============================\n"
+        },
+        "status": "FAILURE"
+    }
 ]
