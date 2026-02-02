@@ -74,6 +74,6 @@ class FixerAgent:
                     "input_prompt": "Erreur pendant la correction",
                     "output_response": str(e),
                 },
-                status="FAIL"
+                status="FAILURE"
             )
             print(f"❌ Erreur FixerAgent : {e}")

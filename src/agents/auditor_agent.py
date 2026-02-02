@@ -59,6 +59,6 @@ class AuditorAgent:
                     "input_prompt": "ERREUR lors de la lecture du fichier",
                     "output_response": str(e)
                 },
-                status="FAIL"
+                status="FAILURE"
             )
             print(f"❌ Erreur dans l'auditor : {e}")

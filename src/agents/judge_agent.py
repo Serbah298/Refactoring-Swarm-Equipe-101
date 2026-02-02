@@ -50,7 +50,7 @@ class JudgeAgent:
                     "input_prompt": "Erreur lors de l'exécution de pytest",
                     "output_response": str(e),
                 },
-                status="FAIL"
+                status="FAILURE"
             )
             print(f"❌ Erreur JudgeAgent : {e}")
             return False, str(e)
