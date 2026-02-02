@@ -1,7 +1,7 @@
 [
     {
-        "id": "a95a0ca1-ef2a-4af1-8914-5d7c7f7c1fd8",
-        "timestamp": "2026-02-02T03:12:02.168939",
+        "id": "d9a4deb2-c868-4306-8316-64171d1b9ae7",
+        "timestamp": "2026-02-02T09:47:06.451862",
         "agent": "Auditor_Agent",
         "model": "gemini-2.5-flash",
         "action": "CODE_ANALYSIS",
@@ -14,41 +14,193 @@
         "status": "SUCCESS"
     },
     {
-        "id": "513e7b6d-37a4-4760-929b-5c8ee967eaad",
-        "timestamp": "2026-02-02T03:46:32.044935",
+        "id": "f22c7040-365c-4fdd-9263-318007d3df27",
+        "timestamp": "2026-02-02T09:47:06.477865",
         "agent": "Fixer_Agent",
         "model": "gemini-2.5-flash",
         "action": "FIX",
         "details": {
             "file_fixed": "fixed_buggy_code.py",
-            "input_prompt": "Tu es un agent de correction de code Python.\nApplique UNIQUEMENT les corrections décrites dans le plan ci-dessous.\nNe modifie rien d'autre.\nNe reformule pas le code.\nNe commente pas tes actions.\nNe produis QUE le code Python corrigé.\n\nPLAN DE CORRECTION :\nErreur de syntaxe : parenthèse manquante\n\nCODE À CORRIGER :\ndef add(a, b)\n    return a + b",
-            "output_response": "Correction appliquée : indentation corrigée, ajout d’une docstring.",
-            "status": "code saved"
+            "input_prompt": "Tu es un agent de correction de code Python.\nApplique UNIQUEMENT les corrections décrites ci-dessous.\nNe modifie rien d'autre.\nNe reformule pas le code.\nNe commente pas tes actions.\nNe produis QUE le code Python corrigé.\n\nFEEDBACK :\nJ'ai détecté une absence de docstring et une mauvaise indentation dans la fonction foo().\n\nCODE À CORRIGER :\ndef add(a, b)\n    return a + b",
+            "output_response": "Corrections appliquées selon le feedback."
         },
         "status": "SUCCESS"
     },
     {
-        "id": "be4c3c7c-645f-4edb-9fa4-090849275165",
-        "timestamp": "2026-02-02T04:15:34.890328",
+        "id": "786aaed6-471e-447e-abe4-7fecff5999ec",
+        "timestamp": "2026-02-02T09:47:06.513864",
         "agent": "Judge_Agent",
         "model": "gemini-2.5-flash",
         "action": "DEBUG",
         "details": {
             "input_prompt": "Erreur lors de l'exécution de pytest",
-            "output_response": "run_pytest() takes 0 positional arguments but 1 was given"
+            "output_response": "run_pytest() missing 1 required positional argument: 'target_dir'"
         },
         "status": "FAILURE"
     },
     {
-        "id": "c6f58846-2196-4d4c-b6d9-038aea34244f",
-        "timestamp": "2026-02-02T04:18:40.458697",
+        "id": "7de5251b-462c-48f7-9bb7-00f0aeb52eb5",
+        "timestamp": "2026-02-02T09:47:06.557877",
+        "agent": "Fixer_Agent",
+        "model": "gemini-2.5-flash",
+        "action": "FIX",
+        "details": {
+            "file_fixed": "fixed_buggy_code.py",
+            "input_prompt": "Tu es un agent de correction de code Python.\nApplique UNIQUEMENT les corrections décrites ci-dessous.\nNe modifie rien d'autre.\nNe reformule pas le code.\nNe commente pas tes actions.\nNe produis QUE le code Python corrigé.\n\nFEEDBACK :\nrun_pytest() missing 1 required positional argument: 'target_dir'\n\nCODE À CORRIGER :\n\"\"\"Fonction corrigée\"\"\"\ndef add(a, b)\n     return a + b",
+            "output_response": "Corrections appliquées selon le feedback."
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "344c32a6-d90f-4d55-94df-3896464fdec0",
+        "timestamp": "2026-02-02T09:47:06.611867",
         "agent": "Judge_Agent",
         "model": "gemini-2.5-flash",
         "action": "DEBUG",
         "details": {
-            "input_prompt": "Exécution automatique des tests pytest sur le dossier cible : sandbox/dataset_internal_test",
-            "output_response": "============================= test session starts =============================\nplatform win32 -- Python 3.11.6, pytest-7.4.4, pluggy-1.6.0\nrootdir: C:\\Users\\hamid\\tp_BATATA\\Refactoring-Swarm-Equipe-101\nplugins: anyio-4.12.1\ncollected 0 items / 1 error\n\n=================================== ERRORS ====================================\n______ ERROR collecting sandbox/dataset_internal_test/test_buggy_code.py ______\nvenv\\Lib\\site-packages\\_pytest\\python.py:617: in _importtestmodule\n    mod = import_path(self.path, mode=importmode, root=self.config.rootpath)\nvenv\\Lib\\site-packages\\_pytest\\pathlib.py:567: in import_path\n    importlib.import_module(module_name)\n..\\..\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\importlib\\__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n<frozen importlib._bootstrap>:1204: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1176: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1147: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:690: in _load_unlocked\n    ???\nvenv\\Lib\\site-packages\\_pytest\\assertion\\rewrite.py:186: in exec_module\n    exec(co, module.__dict__)\nsandbox\\dataset_internal_test\\test_buggy_code.py:1: in <module>\n    from buggy_code import add\nE     File \"C:\\Users\\hamid\\tp_BATATA\\Refactoring-Swarm-Equipe-101\\sandbox\\dataset_internal_test\\buggy_code.py\", line 1\nE       def add(a, b)\nE                    ^\nE   SyntaxError: expected ':'\n=========================== short test summary info ===========================\nERROR sandbox/dataset_internal_test/test_buggy_code.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n============================== 1 error in 0.71s ===============================\n"
+            "input_prompt": "Erreur lors de l'exécution de pytest",
+            "output_response": "run_pytest() missing 1 required positional argument: 'target_dir'"
         },
         "status": "FAILURE"
+    },
+    {
+        "id": "2e263a39-bfcd-46f0-b219-fe9b2efd0b16",
+        "timestamp": "2026-02-02T09:47:06.668908",
+        "agent": "Fixer_Agent",
+        "model": "gemini-2.5-flash",
+        "action": "FIX",
+        "details": {
+            "file_fixed": "fixed_buggy_code.py",
+            "input_prompt": "Tu es un agent de correction de code Python.\nApplique UNIQUEMENT les corrections décrites ci-dessous.\nNe modifie rien d'autre.\nNe reformule pas le code.\nNe commente pas tes actions.\nNe produis QUE le code Python corrigé.\n\nFEEDBACK :\nrun_pytest() missing 1 required positional argument: 'target_dir'\n\nCODE À CORRIGER :\n\"\"\"Fonction corrigée\"\"\"\n\"\"\"Fonction corrigée\"\"\"\ndef add(a, b)\n      return a + b",
+            "output_response": "Corrections appliquées selon le feedback."
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "a81b5490-762b-46c0-b286-f116cd765aaa",
+        "timestamp": "2026-02-02T09:47:06.749939",
+        "agent": "Judge_Agent",
+        "model": "gemini-2.5-flash",
+        "action": "DEBUG",
+        "details": {
+            "input_prompt": "Erreur lors de l'exécution de pytest",
+            "output_response": "run_pytest() missing 1 required positional argument: 'target_dir'"
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "7f3cd69c-734f-4829-8a65-aa7c92797751",
+        "timestamp": "2026-02-02T09:47:06.833871",
+        "agent": "Fixer_Agent",
+        "model": "gemini-2.5-flash",
+        "action": "FIX",
+        "details": {
+            "file_fixed": "fixed_buggy_code.py",
+            "input_prompt": "Tu es un agent de correction de code Python.\nApplique UNIQUEMENT les corrections décrites ci-dessous.\nNe modifie rien d'autre.\nNe reformule pas le code.\nNe commente pas tes actions.\nNe produis QUE le code Python corrigé.\n\nFEEDBACK :\nrun_pytest() missing 1 required positional argument: 'target_dir'\n\nCODE À CORRIGER :\n\"\"\"Fonction corrigée\"\"\"\n\"\"\"Fonction corrigée\"\"\"\n\"\"\"Fonction corrigée\"\"\"\ndef add(a, b)\n        return a + b",
+            "output_response": "Corrections appliquées selon le feedback."
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "5f591db1-2af9-428c-ae52-61ca7956a193",
+        "timestamp": "2026-02-02T09:47:06.908189",
+        "agent": "Auditor_Agent",
+        "model": "gemini-2.5-flash",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "file_analyzed": "test_buggy_code.py",
+            "input_prompt": "Tu es un auditeur de code Python strict.\nAnalyse UNIQUEMENT le code ci-dessous.\nRetourne une liste numérotée de problèmes détectés.\nChaque élément doit être court et factuel.\nN'inclus AUCUNE solution.\nN'inclus AUCUNE explication.\nN'inclus AUCUN texte hors de la liste.\n\nfrom buggy_code import add\n\ndef test_add():\n    assert add(2, 3) == 5",
+            "output_response": "J'ai détecté une absence de docstring et une mauvaise indentation dans la fonction foo().",
+            "issues_found": 2
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "e4b198ff-4a45-4329-bd48-d331c8fa2e0d",
+        "timestamp": "2026-02-02T09:47:06.973866",
+        "agent": "Fixer_Agent",
+        "model": "gemini-2.5-flash",
+        "action": "FIX",
+        "details": {
+            "file_fixed": "fixed_test_buggy_code.py",
+            "input_prompt": "Tu es un agent de correction de code Python.\nApplique UNIQUEMENT les corrections décrites ci-dessous.\nNe modifie rien d'autre.\nNe reformule pas le code.\nNe commente pas tes actions.\nNe produis QUE le code Python corrigé.\n\nFEEDBACK :\nJ'ai détecté une absence de docstring et une mauvaise indentation dans la fonction foo().\n\nCODE À CORRIGER :\nfrom buggy_code import add\n\ndef test_add():\n    assert add(2, 3) == 5",
+            "output_response": "Corrections appliquées selon le feedback."
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "860085f7-699f-4cc3-9287-d4e6eb9f0f99",
+        "timestamp": "2026-02-02T09:47:07.106207",
+        "agent": "Judge_Agent",
+        "model": "gemini-2.5-flash",
+        "action": "DEBUG",
+        "details": {
+            "input_prompt": "Erreur lors de l'exécution de pytest",
+            "output_response": "run_pytest() missing 1 required positional argument: 'target_dir'"
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "89c54012-e3ab-4a66-8516-3fe2751f00e3",
+        "timestamp": "2026-02-02T09:47:07.279889",
+        "agent": "Fixer_Agent",
+        "model": "gemini-2.5-flash",
+        "action": "FIX",
+        "details": {
+            "file_fixed": "fixed_test_buggy_code.py",
+            "input_prompt": "Tu es un agent de correction de code Python.\nApplique UNIQUEMENT les corrections décrites ci-dessous.\nNe modifie rien d'autre.\nNe reformule pas le code.\nNe commente pas tes actions.\nNe produis QUE le code Python corrigé.\n\nFEEDBACK :\nrun_pytest() missing 1 required positional argument: 'target_dir'\n\nCODE À CORRIGER :\n\"\"\"Fonction corrigée\"\"\"\nfrom buggy_code import add\n\ndef test_add():\n     assert add(2, 3) == 5",
+            "output_response": "Corrections appliquées selon le feedback."
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "19b18fb0-94c9-483d-acaa-89ce9e305b99",
+        "timestamp": "2026-02-02T09:47:07.490897",
+        "agent": "Judge_Agent",
+        "model": "gemini-2.5-flash",
+        "action": "DEBUG",
+        "details": {
+            "input_prompt": "Erreur lors de l'exécution de pytest",
+            "output_response": "run_pytest() missing 1 required positional argument: 'target_dir'"
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "a25589f5-c799-473e-805f-ddb60cb263f1",
+        "timestamp": "2026-02-02T09:47:07.554865",
+        "agent": "Fixer_Agent",
+        "model": "gemini-2.5-flash",
+        "action": "FIX",
+        "details": {
+            "file_fixed": "fixed_test_buggy_code.py",
+            "input_prompt": "Tu es un agent de correction de code Python.\nApplique UNIQUEMENT les corrections décrites ci-dessous.\nNe modifie rien d'autre.\nNe reformule pas le code.\nNe commente pas tes actions.\nNe produis QUE le code Python corrigé.\n\nFEEDBACK :\nrun_pytest() missing 1 required positional argument: 'target_dir'\n\nCODE À CORRIGER :\n\"\"\"Fonction corrigée\"\"\"\n\"\"\"Fonction corrigée\"\"\"\nfrom buggy_code import add\n\ndef test_add():\n      assert add(2, 3) == 5",
+            "output_response": "Corrections appliquées selon le feedback."
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "7f46ac16-4a6d-48fc-b2e6-4c9e4c85e4c3",
+        "timestamp": "2026-02-02T09:47:07.598912",
+        "agent": "Judge_Agent",
+        "model": "gemini-2.5-flash",
+        "action": "DEBUG",
+        "details": {
+            "input_prompt": "Erreur lors de l'exécution de pytest",
+            "output_response": "run_pytest() missing 1 required positional argument: 'target_dir'"
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "4e05043b-57ca-4923-a32b-b21b5c036ef8",
+        "timestamp": "2026-02-02T09:47:07.656870",
+        "agent": "Fixer_Agent",
+        "model": "gemini-2.5-flash",
+        "action": "FIX",
+        "details": {
+            "file_fixed": "fixed_test_buggy_code.py",
+            "input_prompt": "Tu es un agent de correction de code Python.\nApplique UNIQUEMENT les corrections décrites ci-dessous.\nNe modifie rien d'autre.\nNe reformule pas le code.\nNe commente pas tes actions.\nNe produis QUE le code Python corrigé.\n\nFEEDBACK :\nrun_pytest() missing 1 required positional argument: 'target_dir'\n\nCODE À CORRIGER :\n\"\"\"Fonction corrigée\"\"\"\n\"\"\"Fonction corrigée\"\"\"\n\"\"\"Fonction corrigée\"\"\"\nfrom buggy_code import add\n\ndef test_add():\n        assert add(2, 3) == 5",
+            "output_response": "Corrections appliquées selon le feedback."
+        },
+        "status": "SUCCESS"
     }
 ]
