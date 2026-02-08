@@ -1,81 +1,130 @@
+"""
+tools.py — API interne pour les agents.
+Toutes les opérations fichier / analyse passent ici.
+Sécurité : aucune écriture hors du dossier sandbox autorisée.
+"""
+
+import os
 import subprocess
-from pathlib import Path
+import sys
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-def run_pylint(path: str) -> dict:
-    try:
-        result = subprocess.run(
-            ["pylint", path],
-            capture_output=True,
-            text=True
+# ─── Résolution du dossier sandbox autorisé ─────────────────────────────────
+_PROJECT_ROOT = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..")
+)
+SANDBOX_ROOT = os.path.join(_PROJECT_ROOT, "sandbox")
+
+
+# ─── Sécurité : vérifier qu'un chemin reste dans le sandbox ─────────────────
+def _assert_in_sandbox(path: str) -> str:
+    """Retourne le chemin absolu si OK, sinon lève une erreur."""
+    abs_path = os.path.abspath(path)
+    if not abs_path.startswith(os.path.abspath(SANDBOX_ROOT)):
+        raise PermissionError(
+            f"[SÉCURITÉ] Tentative d'écriture hors sandbox : {abs_path}"
         )
+    return abs_path
 
-        score = None
-        for line in result.stdout.splitlines():
-            if "Your code has been rated at" in line:
-                try:
-                    score = float(line.split("rated at")[1].split("/")[0])
-                except Exception:
-                    score = None
 
-        return {
-            "success": result.returncode == 0,
-            "score": score,
-            "stdout": result.stdout,
-            "stderr": result.stderr
-        }
+# ─── Lecture d'un fichier ────────────────────────────────────────────────────
+def read_file(filepath: str) -> str:
+    """Lit et retourne le contenu textuel d'un fichier."""
+    abs_path = os.path.abspath(filepath)
+    if not os.path.isfile(abs_path):
+        raise FileNotFoundError(f"[TOOLS] Fichier introuvable : {abs_path}")
+    with open(abs_path, "r", encoding="utf-8") as f:
+        return f.read()
 
-    except Exception as e:
-        return {
-            "success": False,
-            "error": str(e)
-        }
 
-def run_pytest(target_dir: str) -> dict:
+# ─── Écriture d'un fichier (uniquement dans le sandbox) ─────────────────────
+def write_file(filepath: str, content: str) -> None:
+    """Écrit du contenu dans un fichier — uniquement dans le sandbox."""
+    safe = _assert_in_sandbox(filepath)
+    os.makedirs(os.path.dirname(safe), exist_ok=True)
+    with open(safe, "w", encoding="utf-8") as f:
+        f.write(content)
+
+
+# ─── Liste des fichiers Python dans un dossier ──────────────────────────────
+def list_python_files(directory: str) -> list[str]:
+    """Retourne la liste des .py dans le dossier (récursif)."""
+    py_files = []
+    for root, _, files in os.walk(directory):
+        for name in files:
+            if name.endswith(".py"):
+                py_files.append(os.path.join(root, name))
+    return sorted(py_files)
+
+
+# ─── Exécution de pylint sur un fichier ──────────────────────────────────────
+def run_pylint(filepath: str) -> dict:
+    """
+    Lance pylint sur `filepath`.
+    Retourne { "score": float, "messages": str, "returncode": int }
+    """
+    abs_path = os.path.abspath(filepath)
+    cmd = [
+        sys.executable, "-m", "pylint",
+        abs_path,
+        "--output-format=text",
+        "--disable=C0114,C0115,C0116"   # on ignore les docstrings manquantes en score
+    ]
     try:
-        result = subprocess.run(
-            ["pytest", target_dir],
-            capture_output=True,
-            text=True
-        )
-        return {
-            "success": result.returncode == 0,
-            "returncode": result.returncode,
-            "stdout": result.stdout,
-            "stderr": result.stderr
-        }
-    except Exception as e:
-        return {
-            "success": False,
-            "error": str(e)
-        }
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+    except subprocess.TimeoutExpired:
+        return {"score": 0.0, "messages": "Timeout", "returncode": -1}
+    except FileNotFoundError:
+        return {"score": 0.0, "messages": "pylint not installed", "returncode": -1}
+
+    # Extraction du score (dernière ligne typique : "Rated at X.00/10")
+    score = 0.0
+    for line in result.stdout.splitlines():
+        if "Rated at" in line or "rated at" in line:
+            try:
+                parts = line.lower().split("rated at")[1].split("/")[0].strip()
+                score = float(parts)
+            except (IndexError, ValueError):
+                pass
+
+    return {
+        "score": score,
+        "messages": result.stdout + result.stderr,
+        "returncode": result.returncode
+    }
 
 
-def safe_read_file(path: str) -> str:
+# ─── Exécution de pytest sur un fichier ou dossier ──────────────────────────
+def run_pytest(target: str) -> dict:
+    """
+    Lance pytest sur `target` (fichier ou dossier).
+    Retourne { "passed": bool, "output": str, "returncode": int }
+    """
+    abs_path = os.path.abspath(target)
+    cmd = [sys.executable, "-m", "pytest", abs_path, "-v", "--tb=short"]
     try:
-        file_path = (PROJECT_ROOT / path).resolve()
-        if not str(file_path).startswith(str(PROJECT_ROOT)):
-            raise ValueError("Access denied")
-        return file_path.read_text(encoding="utf-8")
-    except Exception as e:
-        raise RuntimeError(f"Cannot read file: {e}")
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+    except subprocess.TimeoutExpired:
+        return {"passed": False, "output": "Timeout", "returncode": -1}
+    except FileNotFoundError:
+        return {"passed": False, "output": "pytest not installed", "returncode": -1}
 
-def safe_write_file(path: str, content: str) -> None:
-    try:
-        file_path = (PROJECT_ROOT / path).resolve()
+    return {
+        "passed": result.returncode == 0,
+        "output": result.stdout + result.stderr,
+        "returncode": result.returncode
+    }
 
-        # 🔒 Sécurité 1 : rester dans le projet
-        if not str(file_path).startswith(str(PROJECT_ROOT)):
-            raise ValueError("Access denied: outside project")
 
-        # 🔒 Sécurité 2 : écriture UNIQUEMENT dans sandbox/
-        sandbox_dir = (PROJECT_ROOT / "sandbox").resolve()
-        if not str(file_path).startswith(str(sandbox_dir)):
-            raise ValueError("Access denied: write allowed only in sandbox/")
-
-        file_path.parent.mkdir(parents=True, exist_ok=True)
-        file_path.write_text(content, encoding="utf-8")
-
-    except Exception as e:
-        raise RuntimeError(f"Cannot write file: {e}")
+# ─── Copie d'un fichier vers le sandbox ─────────────────────────────────────
+def copy_to_sandbox(src_path: str, dest_relative: str) -> str:
+    """
+    Copie un fichier source vers sandbox/<dest_relative>.
+    Retourne le chemin complet dans le sandbox.
+    """
+    import shutil
+    dest = os.path.join(SANDBOX_ROOT, dest_relative)
+    _assert_in_sandbox(dest)
+    os.makedirs(os.path.dirname(dest), exist_ok=True)
+    shutil.copy2(src_path, dest)
+    return dest
